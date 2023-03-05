@@ -1,17 +1,13 @@
 import express from 'express';
-import cors from 'cors';
-
+import { ApolloServer } from 'apollo-server-express';
+import schema from './modules';
 const app = express();
-const port = 4000;
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (request, response) => {
-  response.send('Hello, GraphQL!');
-});
-
-app.listen(port, () => {
-  console.log(`Running a server at http://localhost:${port}`);
-});
+async function startServer() {
+  const server = new ApolloServer({ schema });
+  await server.start();
+  server.applyMiddleware({ app });
+}
+startServer();
+app.listen({ port: 3000 }, () =>
+  console.log(`Server ready at http://localhost:3000`),
+);
